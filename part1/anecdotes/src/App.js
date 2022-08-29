@@ -1,6 +1,21 @@
 import { useState } from "react";
 
+const Winner = ({ anecdotes, points }) => {
+  const mostVotes = Math.max(...points);
+
+  if (mostVotes === 0) {
+    return <div>no votes yet</div>;
+  }
+
+  const winnerPosition = points.indexOf(mostVotes);
+  const winner = anecdotes[winnerPosition];
+
+  return <Anecdote text={winner} points={mostVotes} />;
+};
+
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
+
+const Header = ({ text }) => <h1>{text}</h1>;
 
 const Anecdote = ({ text, points }) => {
   return (
@@ -35,9 +50,12 @@ const App = () => {
 
   return (
     <div>
+      <Header text="anecdote of the day" />
       <Anecdote text={anecdotes[selected]} points={points[selected]} />
       <Button onClick={clickVote} text="vote" />
       <Button onClick={clickAnecdote} text="next anecdote" />
+      <Header text="anecdote with the most votes" />
+      <Winner anecdotes={anecdotes} points={points} />
     </div>
   );
 };
