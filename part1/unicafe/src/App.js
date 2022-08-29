@@ -4,11 +4,14 @@ const Header = ({ text }) => <h1>{text}</h1>;
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
-const Display = ({ text, number, text2 }) => (
-  <div>
-    {text}: {number}
-    {text2}
-  </div>
+const StatisticLine = ({ text, number, text2 }) => (
+  <tr>
+    <td>{text}</td>
+    <td>
+      {number}
+      {text2}
+    </td>
+  </tr>
 );
 
 const Statistics = ({ good, neutral, bad }) => {
@@ -21,14 +24,16 @@ const Statistics = ({ good, neutral, bad }) => {
   }
 
   return (
-    <div>
-      <Display text="good" number={good} />
-      <Display text="neutral" number={neutral} />
-      <Display text="bad" number={bad} />
-      <Display text="all" number={total} />
-      <Display text="average" number={average} />
-      <Display text="positive" number={positive} text2="%" />
-    </div>
+    <table>
+      <tbody>
+        <StatisticLine text="good" number={good} />
+        <StatisticLine text="neutral" number={neutral} />
+        <StatisticLine text="bad" number={bad} />
+        <StatisticLine text="all" number={total} />
+        <StatisticLine text="average" number={average} />
+        <StatisticLine text="positive" number={positive} text2="%" />
+      </tbody>
+    </table>
   );
 };
 
