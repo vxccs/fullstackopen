@@ -4,11 +4,29 @@ const Header = ({ text }) => <h1>{text}</h1>;
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
-const Display = ({ text, number }) => (
-  <p>
+const Display = ({ text, number, text2 }) => (
+  <div>
     {text}: {number}
-  </p>
+    {text2}
+  </div>
 );
+
+const Statistics = ({ good, neutral, bad }) => {
+  const total = good + neutral + bad;
+  const average = (good - bad) / total;
+  const positive = (good / total) * 100;
+
+  return (
+    <div>
+      <Display text="good" number={good} />
+      <Display text="neutral" number={neutral} />
+      <Display text="bad" number={bad} />
+      <Display text="all" number={total} />
+      <Display text="average" number={average} />
+      <Display text="positive" number={positive} text2="%" />
+    </div>
+  );
+};
 
 const App = () => {
   const [good, setGood] = useState(0);
@@ -26,9 +44,7 @@ const App = () => {
       <Button onClick={addNeutral} text="neutral" />
       <Button onClick={addBad} text="bad" />
       <Header text="statistics" />
-      <Display text="good" number={good} />
-      <Display text="neutral" number={neutral} />
-      <Display text="bad" number={bad} />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
 };
