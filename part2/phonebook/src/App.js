@@ -14,30 +14,36 @@ const App = () => {
     { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
   ]);
   const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
+  const [Number, setNumber] = useState("");
+  const [search, setSearch] = useState("");
 
   const handleNameChange = (event) => setNewName(event.target.value);
-  const handleNumberChange = (event) => setNewNumber(event.target.value);
+  const handleNumberChange = (event) => setNumber(event.target.value);
+  const handleSearchChange = (event) => setSearch(event.target.value);
 
-  const addNewName = (event) => {
+  const addNewPerson = (event) => {
     event.preventDefault();
     if (persons.some((person) => person.name === newName)) {
       return alert(`${newName} is already added to phonebook`);
     }
-    setPersons(persons.concat({ name: newName, number: newNumber }));
+    setPersons(persons.concat({ name: newName, number: Number }));
     setNewName("");
-    setNewNumber("");
+    setNumber("");
   };
+
+  const usersToShow = persons.filter((person) => person.name.toLowerCase().includes(search));
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addNewName}>
+      filter shown with: <input value={search} onChange={handleSearchChange} />
+      <h2>Add new</h2>
+      <form onSubmit={addNewPerson}>
         <div>
           name: <input value={newName} onChange={handleNameChange} />
         </div>
         <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
+          number: <input value={Number} onChange={handleNumberChange} />
         </div>
         <div>
           <button type="submit">add</button>
@@ -45,7 +51,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map((person) => (
+        {usersToShow.map((person) => (
           <Person person={person} key={person.name} />
         ))}
       </ul>
