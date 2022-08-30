@@ -7,19 +7,21 @@ const Filter = ({ value, onChange }) => (
   </div>
 );
 
-const Countries = ({ countriesToShow }) => {
-  if (countriesToShow.length > 10) {
+const Countries = ({ countries, setCountries }) => {
+  if (countries.length > 10) {
     return <div>too many matches, specify another filter</div>;
-  } else if (countriesToShow.length > 1) {
+  } else if (countries.length > 1) {
     return (
       <div>
-        {countriesToShow.map((country) => (
-          <p key={country.cca2}>{country.name.common}</p>
+        {countries.map((country, i) => (
+          <p key={i}>
+            {country.name.common} <button onClick={() => setCountries([country])}>show</button>
+          </p>
         ))}
       </div>
     );
-  } else if (countriesToShow.length === 1) {
-    let country = countriesToShow[0];
+  } else if (countries.length === 1) {
+    let country = countries[0];
     return (
       <div>
         <h1>{country.name.common}</h1>
@@ -29,32 +31,34 @@ const Countries = ({ countriesToShow }) => {
         </p>
         <h2>Languages</h2>
         <ul>
-          {Object.values(country.languages).map((lang) => (
-            <li key={lang}>{lang}</li>
+          {Object.values(country.languages).map((lang, i) => (
+            <li key={i}>{lang}</li>
           ))}
         </ul>
-        <img src={country.flags.png} width="200" />
+        <img src={country.flags.png} width="200" alt={`${country.name.common} Flag`} />
       </div>
     );
   }
 };
 
 const App = () => {
+  const [allCountries, setAllCountries] = useState([]);
   const [countries, setCountries] = useState([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    axios.get("https://restcountries.com/v3.1/all").then((response) => setCountries(response.data));
-  });
+    axios.get("https://restcountries.com/v3.1/all").then((response) => setAllCountries(response.data));
+  }, []);
 
-  const handleSearchChange = (event) => setSearch(event.target.value);
-
-  const countriesToShow = countries.filter((country) => country.name.common.toLowerCase().includes(search));
+  const handleSearchChange = (event) => {
+    setCountries(allCountries.filter((country) => country.name.common.toLowerCase().includes(event.target.value)));
+    setSearch(event.target.value);
+  };
 
   return (
     <div>
       <Filter value={search} onChange={handleSearchChange} />
-      <Countries countriesToShow={countriesToShow} />
+      <Countries countries={countries} setCountries={setCountries} />
     </div>
   );
 };
