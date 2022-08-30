@@ -23,9 +23,14 @@ const App = () => {
     if (persons.some((person) => person.name === newName)) {
       return alert(`${newName} is already added to phonebook`);
     }
-    setPersons(persons.concat({ name: newName, number: newNumber }));
-    setNewName("");
-    setNewNumber("");
+
+    const newPerson = { name: newName, number: newNumber };
+
+    axios.post("http://localhost:3001/persons", newPerson).then((response) => {
+      setPersons(persons.concat(response.data));
+      setNewName("");
+      setNewNumber("");
+    });
   };
 
   const personsToShow = persons.filter((person) => person.name.toLowerCase().includes(search));
@@ -35,7 +40,13 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter value={search} onChange={handleSearchChange} />
       <h2>Add new</h2>
-      <PersonForm onSubmit={addNewPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
+      <PersonForm
+        onSubmit={addNewPerson}
+        newName={newName}
+        newNumber={newNumber}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+      />
       <h2>Numbers</h2>
       <Persons personsToShow={personsToShow} />
     </div>
