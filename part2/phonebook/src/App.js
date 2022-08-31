@@ -21,16 +21,25 @@ const App = () => {
     event.preventDefault();
 
     if (personsAll.some((person) => person.name === newName)) {
-      return alert(`${newName} is already added to phonebook`);
+      if (window.confirm(`${newName} is already added to phonebook, replace old number with new one?`)) {
+        const personToUpdate = personsAll.find((person) => person.name === newName);
+        const changedPerson = { ...personToUpdate, number: newNumber };
+
+        personService.update(changedPerson.id, changedPerson).then((returnedPerson) => {
+          setPersonsAll(personsAll.map((person) => (person.id !== changedPerson.id ? person : returnedPerson)));
+          setNewName("");
+          setNewNumber("");
+        });
+      }
+    } else {
+      const newPerson = { name: newName, number: newNumber };
+
+      personService.create(newPerson).then((returnedPerson) => {
+        setPersonsAll(personsAll.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+      });
     }
-
-    const newPerson = { name: newName, number: newNumber };
-
-    personService.create(newPerson).then((returnedPerson) => {
-      setPersonsAll(personsAll.concat(returnedPerson));
-      setNewName("");
-      setNewNumber("");
-    });
   };
 
   const removePerson = (id) => {
