@@ -20,7 +20,7 @@ const App = () => {
   const addNewPerson = (event) => {
     event.preventDefault();
 
-    if (persons.some((person) => person.name === newName)) {
+    if (personsAll.some((person) => person.name === newName)) {
       return alert(`${newName} is already added to phonebook`);
     }
 
@@ -31,6 +31,14 @@ const App = () => {
       setNewName("");
       setNewNumber("");
     });
+  };
+
+  const removePerson = (id) => {
+    const personToDelete = personsAll.filter((person) => person.id === id);
+    if (window.confirm(`Delete ${personToDelete[0].name}?`)) {
+      personService.remove(id);
+    }
+    setPersonsAll(personsAll.filter((person) => person.id !== personToDelete[0].id));
   };
 
   const handleNameChange = (event) => setNewName(event.target.value);
@@ -53,7 +61,11 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons personsToShow={persons} />
+      {search === "" ? (
+        <Persons personsToShow={personsAll} onClick={removePerson} />
+      ) : (
+        <Persons personsToShow={persons} onClick={removePerson} />
+      )}
     </div>
   );
 };

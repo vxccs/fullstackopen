@@ -1,10 +1,10 @@
 import Person from "./Person";
 
-const Persons = ({ personsToShow }) => (
+const Persons = ({ personsToShow, onClick }) => (
   <div>
     <ul>
       {personsToShow.map((person) => (
-        <Person person={person} key={person.name} />
+        <Person person={person} onClick={onClick} key={person.name} />
       ))}
     </ul>
   </div>
