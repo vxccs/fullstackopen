@@ -16,9 +16,15 @@ const App = () => {
   const [Type, setType] = useState("");
 
   useEffect(() => {
-    personService.getAll().then((initialPersons) => {
-      setPersonsAll(initialPersons);
-    });
+    personService
+      .getAll()
+      .then((initialPersons) => {
+        setPersonsAll(initialPersons);
+      })
+      .catch((error) => {
+        showMessage("Something went wrong.", "error");
+        console.log(error);
+      });
   }, []);
 
   const showMessage = (message, type) => {
@@ -39,31 +45,50 @@ const App = () => {
         const personToUpdate = personsAll.find((person) => person.name === newName);
         const changedPerson = { ...personToUpdate, number: newNumber };
 
-        personService.update(changedPerson.id, changedPerson).then((returnedPerson) => {
-          showMessage(`${changedPerson.name}'s number has been updated.`, "success");
-          setPersonsAll(personsAll.map((person) => (person.id !== changedPerson.id ? person : returnedPerson)));
-          setNewName("");
-          setNewNumber("");
-        });
+        personService
+          .update(changedPerson.id, changedPerson)
+          .then((returnedPerson) => {
+            showMessage(`${changedPerson.name}'s number has been updated.`, "success");
+            setPersonsAll(personsAll.map((person) => (person.id !== changedPerson.id ? person : returnedPerson)));
+            setNewName("");
+            setNewNumber("");
+          })
+          .catch((error) => {
+            showMessage(`Could not update number for ${changedPerson.name}.`, "error");
+            console.log(error);
+          });
       }
     } else {
       const newPerson = { name: newName, number: newNumber };
 
-      personService.create(newPerson).then((returnedPerson) => {
-        showMessage(`${newPerson.name} has been added.`, "success");
-        setPersonsAll(personsAll.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
-      });
+      personService
+        .create(newPerson)
+        .then((returnedPerson) => {
+          showMessage(`${newPerson.name} has been added.`, "success");
+          setPersonsAll(personsAll.concat(returnedPerson));
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          showMessage(`Could not add ${newPerson.name}.`, "error");
+          console.log(error);
+        });
     }
   };
 
   const removePerson = (id) => {
     const personToDelete = personsAll.filter((person) => person.id === id)[0];
     if (window.confirm(`Delete ${personToDelete.name}?`)) {
-      personService.remove(id);
-      setPersonsAll(personsAll.filter((person) => person.id !== personToDelete.id));
-      showMessage(`${personToDelete.name} has been deleted.`, "success");
+      personService
+        .remove(id)
+        .then(() => {
+          setPersonsAll(personsAll.filter((person) => person.id !== personToDelete.id));
+          showMessage(`${personToDelete.name} has been deleted.`, "success");
+        })
+        .catch((error) => {
+          showMessage(`Could not remove ${personToDelete.name}.`, "error");
+          console.log(error);
+        });
     }
   };
 
