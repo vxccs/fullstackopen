@@ -34,7 +34,7 @@ const App = () => {
     setTimeout(() => {
       setMessage("");
       setType("");
-    }, 3000);
+    }, 5000);
   };
 
   const addNewPerson = (event) => {
@@ -70,7 +70,7 @@ const App = () => {
           setNewNumber("");
         })
         .catch((error) => {
-          showMessage(`Could not add ${newPerson.name}.`, "error");
+          showMessage(`${error.response.data.error}`, "error");
           console.log(error);
         });
     }
