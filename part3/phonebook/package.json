@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "shx rm -rf build && cd ../../part2/phonebook && npm run build && shx cp -r build ../../part3/phonebook",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "shx": "^0.3.4"
   }
 }
