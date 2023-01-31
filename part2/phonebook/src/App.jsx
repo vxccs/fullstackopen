@@ -35,7 +35,10 @@ const App = () => {
       })
       .catch((error) => {
         console.error(error);
-        showMessage(`information of ${personExists.name} has already been removed`, 'error');
+        showMessage(
+          `information of ${personExists.name} has already been removed`,
+          'error'
+        );
       });
   };
 
@@ -43,8 +46,14 @@ const App = () => {
     e.preventDefault();
 
     const personExists = persons.find((p) => p.name === newName);
-    if (personExists && window.confirm(`${newName} is already added in the phonebook, update number?`)) {
-      updatePerson(personExists);
+    if (personExists) {
+      if (
+        window.confirm(
+          `${newName} is already added in the phonebook, update number?`
+        )
+      ) {
+        updatePerson(personExists);
+      }
     } else {
       const personObject = {
         name: newName,
@@ -76,7 +85,9 @@ const App = () => {
   };
 
   const personsToShow = search
-    ? persons.filter((person) => person.name.toLowerCase().includes(search.toLowerCase()))
+    ? persons.filter((person) =>
+        person.name.toLowerCase().includes(search.toLowerCase())
+      )
     : persons;
 
   return (
