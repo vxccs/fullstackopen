@@ -9,7 +9,6 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
   },
-  plugins: ['react'],
   rules: {
     indent: ['error', 2],
     'linebreak-style': ['error', 'windows'],
