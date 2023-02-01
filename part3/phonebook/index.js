@@ -8,7 +8,7 @@ app.use(express.static('build'));
 app.use(express.json());
 app.use(cors());
 
-morgan.token('body', (req, res) => JSON.stringify(req.body));
+morgan.token('body', (req) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
 // get info
@@ -19,7 +19,7 @@ app.get('/info/', (req, res) => {
 });
 
 // get all items
-app.get('/api/persons/', (req, res, next) => {
+app.get('/api/persons/', (req, res) => {
   Person.find({}).then((resu) => res.json(resu));
 });
 
