@@ -35,10 +35,7 @@ const App = () => {
       })
       .catch((error) => {
         console.error(error);
-        showMessage(
-          `information of ${personExists.name} has already been removed`,
-          'error'
-        );
+        showMessage(`information of ${personExists.name} has already been removed`, 'error');
       });
   };
 
@@ -47,11 +44,7 @@ const App = () => {
 
     const personExists = persons.find((p) => p.name === newName);
     if (personExists) {
-      if (
-        window.confirm(
-          `${newName} is already added in the phonebook, update number?`
-        )
-      ) {
+      if (window.confirm(`${newName} is already added in the phonebook, update number?`)) {
         updatePerson(personExists);
       }
     } else {
@@ -60,12 +53,18 @@ const App = () => {
         number: newNumber,
       };
 
-      personService.create(personObject).then((res) => {
-        setPersons([...persons, res]);
-        setNewName('');
-        setNewNumber('');
-        showMessage(`${personObject.name} added`, 'success');
-      });
+      personService
+        .create(personObject)
+        .then((res) => {
+          setPersons([...persons, res]);
+          setNewName('');
+          setNewNumber('');
+          showMessage(`${personObject.name} added`, 'success');
+        })
+        .catch((e) => {
+          console.error(e);
+          showMessage(e.response.data.error, 'error');
+        });
     }
   };
 
@@ -85,9 +84,7 @@ const App = () => {
   };
 
   const personsToShow = search
-    ? persons.filter((person) =>
-        person.name.toLowerCase().includes(search.toLowerCase())
-      )
+    ? persons.filter((person) => person.name.toLowerCase().includes(search.toLowerCase()))
     : persons;
 
   return (
