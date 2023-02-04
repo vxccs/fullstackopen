@@ -8,7 +8,7 @@ const api = supertest(app);
 beforeEach(async () => {
   await Blog.deleteMany({});
   await Blog.insertMany(helper.listWithBlogs);
-});
+}, 100000);
 
 describe('when there are some notes saved initially', () => {
   test('blogs are returned as json', async () => {

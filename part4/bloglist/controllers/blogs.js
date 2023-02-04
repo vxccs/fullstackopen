@@ -10,7 +10,7 @@ blogsRouter.post('/', async (request, response) => {
   const { title, author, url, likes } = request.body;
 
   if (!title || !url) {
-    response.status(400).json({ error: 'missing fields' });
+    return response.status(400).json({ error: 'missing fields' });
   }
 
   const blog = new Blog({ title, author, url, likes: likes || 0 });
