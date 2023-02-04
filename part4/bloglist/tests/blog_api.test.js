@@ -97,9 +97,7 @@ describe('deleting a blog', () => {
 describe('updating a blog', () => {
   test('succeeds if request is valid', async () => {
     const blogsAtStart = await helper.blogsInDb();
-    const blogToUpdate = blogsAtStart[0];
-
-    blogToUpdate.likes++;
+    const blogToUpdate = { ...blogsAtStart[0], likes: blogsAtStart[0].likes++ };
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
