@@ -2,12 +2,28 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const helper = require('./test_helper');
 const api = supertest(app);
+const config = require('../utils/config');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+let token;
 
 beforeEach(async () => {
   await Blog.deleteMany({});
   await Blog.insertMany(helper.listWithBlogs);
+
+  await User.deleteMany({});
+
+  const passwordHash = await bcrypt.hash('secret', 10);
+  const user = new User({ username: 'testing', passwordHash });
+
+  await user.save();
+
+  const userForToken = { username: user.username, id: user.id };
+  token = jwt.sign(userForToken, config.SECRET);
 }, 100000);
 
 describe('when there are some notes saved initially', () => {
@@ -40,6 +56,7 @@ describe('when adding a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -60,6 +77,7 @@ describe('when adding a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -77,14 +95,39 @@ describe('when adding a new blog', () => {
 
     await api.post('/api/blogs').send(newBlog).expect(400);
   });
+
+  test('if token is missing, return error', async () => {
+    const newBlog = {
+      title: 'This is a new blog sent by POST',
+      author: 'VS',
+      url: 'would go here',
+      likes: 5,
+    };
+
+    let result = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toBe('invalid token');
+  });
 });
 
 describe('deleting a blog', () => {
   test('succeeds if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb();
-    const blogToDelete = blogsAtStart[0];
+    const newBlog = {
+      title: 'This is getting deleted',
+      author: 'VS',
+      url: 'would go here',
+      likes: 5,
+    };
+    const response = await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newBlog);
+    const blogToDelete = response.body;
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    const blogsAtStart = await helper.blogsInDb();
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).set('Authorization', `Bearer ${token}`).expect(204);
 
     const blogsAtEnd = await helper.blogsInDb();
     const titles = blogsAtEnd.map((b) => b.title);
@@ -96,11 +139,18 @@ describe('deleting a blog', () => {
 
 describe('updating a blog', () => {
   test('succeeds if request is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb();
-    const blogToUpdate = { ...blogsAtStart[0], likes: blogsAtStart[0].likes++ };
+    const newBlog = {
+      title: 'This is getting updated',
+      author: 'VS',
+      url: 'would go here',
+      likes: 5,
+    };
+    const response = await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newBlog);
+    const blogToUpdate = { ...response.body, likes: response.body.likes + 10 };
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(blogToUpdate)
       .expect(200)
       .expect('Content-Type', /application\/json/);

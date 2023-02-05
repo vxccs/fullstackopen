@@ -1,15 +1,6 @@
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
-const listWithOneBlog = [
-  {
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-  },
-];
-
 const listWithBlogs = [
   {
     title: 'React patterns',
@@ -60,7 +51,6 @@ const usersInDb = async () => {
 };
 
 module.exports = {
-  listWithOneBlog,
   listWithBlogs,
   blogsInDb,
   usersInDb,
