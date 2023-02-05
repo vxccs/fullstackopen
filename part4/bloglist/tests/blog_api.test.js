@@ -19,9 +19,7 @@ beforeEach(async () => {
 
   const passwordHash = await bcrypt.hash('secret', 10);
   const user = new User({ username: 'testing', passwordHash });
-
   await user.save();
-
   const userForToken = { username: user.username, id: user.id };
   token = jwt.sign(userForToken, config.SECRET);
 }, 100000);
@@ -65,7 +63,7 @@ describe('when adding a new blog', () => {
     const titles = blogsInDb.map((blog) => blog.title);
 
     expect(blogsInDb).toHaveLength(helper.listWithBlogs.length + 1);
-    expect(titles).toContain('This is a new blog sent by POST');
+    expect(titles).toContain(newBlog.title);
   });
 
   test('if likes is missing, defaults to 0', async () => {
@@ -93,7 +91,8 @@ describe('when adding a new blog', () => {
       author: 'VS',
     };
 
-    await api.post('/api/blogs').send(newBlog).expect(400);
+    const result = await api.post('/api/blogs').send(newBlog).expect(400);
+    expect(result.body.error).toBe('missing fields');
   });
 
   test('if token is missing, return error', async () => {
@@ -104,7 +103,7 @@ describe('when adding a new blog', () => {
       likes: 5,
     };
 
-    let result = await api
+    const result = await api
       .post('/api/blogs')
       .send(newBlog)
       .expect(401)
