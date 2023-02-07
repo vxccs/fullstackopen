@@ -1,6 +1,29 @@
-import React from 'react';
+import { useState } from 'react';
+import blogService from '../services/blogs';
+import loginService from '../services/login';
 
-const LoginForm = ({ handleLogin, username, setUsername, password, setPassword }) => {
+const LoginForm = ({ setUser, showMessage }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const user = await loginService.login({ username, password });
+
+      setUser(user);
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      blogService.setToken(user.token);
+
+      setUsername('');
+      setPassword('');
+    } catch (error) {
+      console.log('wrong credentials');
+      showMessage(error.response.data.error, false);
+    }
+  };
+
   return (
     <div>
       <form onSubmit={handleLogin}>

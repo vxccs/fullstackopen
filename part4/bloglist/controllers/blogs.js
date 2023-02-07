@@ -43,7 +43,10 @@ blogsRouter.post('/', async (request, response) => {
   });
 
   const result = await blog.save();
+
   user.blogs = [...user.blogs, result._id];
+  await user.save();
+
   response.status(201).json(result);
 });
 
