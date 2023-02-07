@@ -23,8 +23,9 @@ const userExtractor = async (request, response, next) => {
     } else {
       request.user = null;
     }
-  } catch {
-    logger.error('invalid token');
+  } catch (error) {
+    logger.error(error.message);
+    next(error);
   }
 
   next();
