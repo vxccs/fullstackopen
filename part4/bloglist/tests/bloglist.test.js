@@ -10,7 +10,6 @@ const listWithOneBlog = [
     __v: 0,
   },
 ];
-
 const blogs = [
   {
     _id: '5a422a851b54a676234d17f7',
@@ -61,7 +60,6 @@ const blogs = [
     __v: 0,
   },
 ];
-
 const blogWithMostLikes = {
   _id: '5a422b3a1b54a676234d17f9',
   title: 'Canonical string reduction',

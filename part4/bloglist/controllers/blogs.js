@@ -11,8 +11,12 @@ blogsRouter.get('/', async (request, response) => {
 });
 
 blogsRouter.get('/:id', async (request, response) => {
-  if (!mongoose.Types.ObjectId.isValid(request.params.id)) return response.status(400).json({ error: 'invalid id' });
-  const blog = await Blog.findById(request.params.id).populate('user', { username: 1, name: 1 });
+  if (!mongoose.Types.ObjectId.isValid(request.params.id))
+    return response.status(400).json({ error: 'invalid id' });
+  const blog = await Blog.findById(request.params.id).populate('user', {
+    username: 1,
+    name: 1,
+  });
   if (!blog) return response.status(400).json({ error: 'id does not exist' });
   response.json(blog);
 });
@@ -27,7 +31,8 @@ blogsRouter.post('/', async (request, response) => {
   let decodedToken;
   try {
     decodedToken = jwt.verify(request.token, config.SECRET);
-    if (!decodedToken.id) return response.status(401).json({ error: 'token missing or invalid' });
+    if (!decodedToken.id)
+      return response.status(401).json({ error: 'token missing or invalid' });
   } catch (error) {
     return response.status(401).json({ error: 'invalid token' });
   }
@@ -46,6 +51,7 @@ blogsRouter.post('/', async (request, response) => {
 
   user.blogs = [...user.blogs, result._id];
   await user.save();
+  await result.populate('user', { username: 1, name: 1 });
 
   response.status(201).json(result);
 });
@@ -54,13 +60,15 @@ blogsRouter.delete('/:id', async (request, response) => {
   let decodedToken;
   try {
     decodedToken = jwt.verify(request.token, config.SECRET);
-    if (!decodedToken.id) return response.status(401).json({ error: 'token missing or invalid' });
+    if (!decodedToken.id)
+      return response.status(401).json({ error: 'token missing or invalid' });
   } catch (error) {
     return response.status(401).json({ error: 'invalid token' });
   }
 
   const id = request.params.id;
-  if (!mongoose.Types.ObjectId.isValid(id)) return response.status(400).json({ error: 'invalid id' });
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return response.status(400).json({ error: 'invalid id' });
   const blog = await Blog.findById(id);
   if (!blog) return response.status(400).json({ error: 'id does not exist' });
 
@@ -75,13 +83,15 @@ blogsRouter.put('/:id', async (request, response) => {
   let decodedToken;
   try {
     decodedToken = jwt.verify(request.token, config.SECRET);
-    if (!decodedToken.id) return response.status(401).json({ error: 'token missing or invalid' });
+    if (!decodedToken.id)
+      return response.status(401).json({ error: 'token missing or invalid' });
   } catch (error) {
     return response.status(401).json({ error: 'invalid token' });
   }
 
   const id = request.params.id;
-  if (!mongoose.Types.ObjectId.isValid(id)) return response.status(400).json({ error: 'invalid id' });
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return response.status(400).json({ error: 'invalid id' });
   const blog = await Blog.findById(id);
   if (!blog) return response.status(400).json({ error: 'id does not exist' });
 
@@ -92,7 +102,10 @@ blogsRouter.put('/:id', async (request, response) => {
 
   const newBlog = { title, author, url, likes };
 
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, newBlog, { new: true });
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, newBlog, {
+    new: true,
+  });
+  await updatedBlog.populate('user', { username: 1, name: 1 });
   response.json(updatedBlog);
 });
 

@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
-import loginService from './services/login';
+import Togglable from './components/Togglable';
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('currentUser')) || null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem('currentUser')) || null
+  );
   const [notification, setNotification] = useState(null);
 
   const showMessage = (message, success) => {
@@ -22,28 +24,61 @@ function App() {
     blogService.setToken(null);
   };
 
+  const updateBlog = async (blog) => {
+    const response = await blogService.update(blog.id, {
+      ...blog,
+      likes: blog.likes + 1,
+    });
+    setBlogs(blogs.map((b) => (b.id === blog.id ? response : b)));
+  };
+
+  const removeBlog = async ({ title, author, id }) => {
+    if (window.confirm(`remove blog: "${title}" by ${author}?`)) {
+      await blogService.remove(id);
+      setBlogs(blogs.filter((b) => b.id !== id));
+    }
+  };
+
+  const blogFormRef = useRef();
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
     blogService.setToken(user?.token);
   }, []);
 
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
+
   return (
     <div>
-      <h1>{user ? 'blogs' : 'log in to application'}</h1>
+      <h1>{user ? 'bloglist' : 'log in to application'}</h1>
       <Notification notification={notification} />
       {user ? (
         <div>
           <p>
-            <em>{user.name}</em> logged in <button onClick={handleLogout}>logout</button>
+            <em>{user.name}</em> logged in{' '}
+            <button onClick={handleLogout}>logout</button>
           </p>
 
-          <h2>create new</h2>
-          <BlogForm blogs={blogs} setBlogs={setBlogs} showMessage={showMessage} />
+          <Togglable buttonLabel="new blog" ref={blogFormRef}>
+            <h2>create new</h2>
+            <BlogForm
+              blogs={blogs}
+              setBlogs={setBlogs}
+              showMessage={showMessage}
+              blogFormRef={blogFormRef}
+            />
+          </Togglable>
 
           <h2>blogs</h2>
           <div>
-            {blogs.map((blog) => (
-              <Blog key={blog.id} blog={blog} />
+            {sortedBlogs.map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                updateBlog={updateBlog}
+                removeBlog={removeBlog}
+                user={user}
+              />
             ))}
           </div>
         </div>
