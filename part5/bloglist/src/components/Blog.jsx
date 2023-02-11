@@ -23,7 +23,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
         <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
       </p>
       {visible && (
-        <div style={showWhenVisible} class="blogContent">
+        <div style={showWhenVisible} className="blogContent">
           <p>{blog.url}</p>
           <p>
             likes: {blog.likes} <button onClick={() => updateBlog(blog)}>like</button>
