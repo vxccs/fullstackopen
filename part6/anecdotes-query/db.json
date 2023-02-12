@@ -32,8 +32,18 @@
     },
     {
       "content": "Testing",
-      "votes": 3,
+      "votes": 9,
       "id": "fIMoHvn"
+    },
+    {
+      "content": "Testing 2",
+      "votes": 1,
+      "id": "iTmjA5p"
+    },
+    {
+      "content": "Testing 3",
+      "votes": 1,
+      "id": "oTzT-R8"
     }
   ]
 }

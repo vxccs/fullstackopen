@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
+import { timedNotification, useNotificationDispatch } from './NotificationContext';
 import { getAnecdotes, updateAnecdote } from './requests';
 
 const App = () => {
+  const dispatch = useNotificationDispatch();
   const queryClient = useQueryClient();
   const voteAnecdoteMutation = useMutation(updateAnecdote, {
     onSuccess: (newAnecdote) => {
@@ -18,6 +20,11 @@ const App = () => {
   if (isError) return <div>anecdote service not available due to problems in server</div>;
   const anecdotes = data;
 
+  const voteAnecdote = (anecdote) => {
+    voteAnecdoteMutation.mutate(anecdote);
+    timedNotification(dispatch, `voted for '${anecdote.content}'`);
+  };
+
   return (
     <div>
       <h3>Anecdote app</h3>
@@ -30,7 +37,7 @@ const App = () => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => voteAnecdoteMutation.mutate(anecdote)}>vote</button>
+            <button onClick={() => voteAnecdote(anecdote)}>vote</button>
           </div>
         </div>
       ))}
