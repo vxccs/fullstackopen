@@ -5,10 +5,13 @@ import { timedNotification } from '../reducers/notificationReducer';
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
 
-  const newAnecdote = (e) => {
+  const newAnecdote = async (e) => {
     e.preventDefault();
-    dispatch(addAnecdote(e.target.anecdote.value));
-    dispatch(timedNotification(`you added '${e.target.anecdote.value}'`));
+
+    const content = e.target.anecdote.value;
+    dispatch(addAnecdote(content));
+
+    dispatch(timedNotification(`you added '${content}'`));
     e.target.anecdote.value = '';
   };
 
