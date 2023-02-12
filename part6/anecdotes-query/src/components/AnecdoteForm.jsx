@@ -1,19 +1,19 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { timedNotification, useNotificationDispatch } from '../NotificationContext';
+import { useTimedNotification } from '../NotificationContext';
 import { createAnecdote } from '../requests';
 
 const AnecdoteForm = () => {
-  const dispatch = useNotificationDispatch();
   const queryClient = useQueryClient();
+  const notifyMessage = useTimedNotification();
   const newAnecdoteMutation = useMutation(createAnecdote, {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData('anecdotes');
       queryClient.setQueryData('anecdotes', [...anecdotes, newAnecdote]);
 
-      timedNotification(dispatch, `added '${newAnecdote.content}'`);
+      notifyMessage(`added '${newAnecdote.content}'`);
     },
     onError: (e) => {
-      timedNotification(dispatch, `${e.response.data.error}`);
+      notifyMessage(`${e.response.data.error}`);
     },
   });
 

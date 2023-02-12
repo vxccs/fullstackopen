@@ -34,10 +34,13 @@ export const useNotificationDispatch = () => {
 };
 
 let timer;
-export const timedNotification = (dispatch, message) => {
-  dispatch({ type: 'SHOW', payload: message });
-  clearTimeout(timer);
-  timer = setTimeout(() => dispatch({ type: 'HIDE' }), 5000);
+export const useTimedNotification = () => {
+  const dispatch = useNotificationDispatch();
+  return (payload) => {
+    clearTimeout(timer);
+    dispatch({ type: 'SHOW', payload });
+    timer = setTimeout(() => dispatch({ type: 'HIDE' }), 5000);
+  };
 };
 
 export default NotificationContext;
