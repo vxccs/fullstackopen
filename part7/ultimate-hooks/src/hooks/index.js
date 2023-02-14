@@ -27,9 +27,7 @@ export const useResource = (baseUrl) => {
     setResources([...resources, data]);
   };
 
-  const service = {
-    create,
-  };
+  const service = { create };
 
   return [resources, service];
 };

@@ -8,13 +8,13 @@ const App = () => {
   const [notes, noteService] = useResource('http://localhost:3005/notes');
   const [persons, personService] = useResource('http://localhost:3005/persons');
 
-  const handleNoteSubmit = (event) => {
-    event.preventDefault();
+  const handleNoteSubmit = (e) => {
+    e.preventDefault();
     noteService.create({ content: content.value });
   };
 
-  const handlePersonSubmit = (event) => {
-    event.preventDefault();
+  const handlePersonSubmit = (e) => {
+    e.preventDefault();
     personService.create({ name: name.value, number: number.value });
   };
 
