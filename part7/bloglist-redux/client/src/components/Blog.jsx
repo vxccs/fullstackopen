@@ -9,6 +9,7 @@ const Blog = ({ blog, user }) => {
   const [visible, setVisible] = useState(false);
 
   const showWhenVisible = { display: visible ? '' : 'none' };
+
   const blogStyle = {
     backgroundColor: '#f3f3f3',
     padding: '3px 10px',
@@ -16,15 +17,13 @@ const Blog = ({ blog, user }) => {
     marginBottom: '1rem',
   };
 
-  const toggleVisibility = () => {
-    setVisible(!visible);
-  };
-
   return (
     <div className="blog" style={blogStyle}>
       <p>
         {blog.title} by {blog.author}
-        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+        <button onClick={() => setVisible(!visible)}>
+          {visible ? 'hide' : 'view'}
+        </button>
       </p>
       {visible && (
         <div style={showWhenVisible} className="blogContent">
