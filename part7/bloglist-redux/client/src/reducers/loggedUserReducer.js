@@ -4,7 +4,7 @@ import loginService from '../services/login';
 import { timedNotification } from './notificationReducer';
 
 const userSlice = createSlice({
-  name: 'user',
+  name: 'loggedUser',
   initialState: null,
   reducers: {
     setUser: (state, action) => action.payload,

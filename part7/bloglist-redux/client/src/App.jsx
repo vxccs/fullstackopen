@@ -1,15 +1,16 @@
-import { useEffect, useRef } from 'react';
-import BlogForm from './components/BlogForm';
+import { useEffect } from 'react';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
-import Togglable from './components/Togglable';
 import { useDispatch, useSelector } from 'react-redux';
 import { initializeBlogs } from './reducers/blogsReducer';
-import BlogList from './components/BlogList';
-import {
-  getUserFromLocalStorage,
-  logoutUser,
-} from './reducers/loggedUserReducer';
+import { getUserFromLocalStorage } from './reducers/loggedUserReducer';
+import Users from './components/Users';
+import { Routes, Route, useMatch } from 'react-router-dom';
+import Home from './components/Home';
+import User from './components/User';
+import { initializeUsers } from './reducers/usersReducer';
+import Blog from './components/Blog';
+import Navigation from './components/Navigation';
 
 function App() {
   const dispatch = useDispatch();
@@ -17,32 +18,31 @@ function App() {
 
   useEffect(() => {
     dispatch(initializeBlogs());
+    dispatch(initializeUsers());
     dispatch(getUserFromLocalStorage());
   }, [dispatch]);
 
-  const blogFormRef = useRef();
-
   return (
     <div>
-      <h1>{user ? 'bloglist' : 'log in to application'}</h1>
       <Notification />
       {user ? (
         <div>
-          <p>
-            <em>{user.name}</em> logged in{' '}
-            <button onClick={() => dispatch(logoutUser())}>logout</button>
-          </p>
+          <Navigation />
 
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <h2>create new</h2>
-            <BlogForm blogFormRef={blogFormRef} />
-          </Togglable>
+          <h1>bloglist</h1>
 
-          <h2>blogs</h2>
-          <BlogList user={user} />
+          <Routes>
+            <Route path="/" exact element={<Home />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<User />} />
+            <Route path="/blogs/:id" element={<Blog />} />
+          </Routes>
         </div>
       ) : (
-        <LoginForm />
+        <div>
+          <h1>log in to application</h1>
+          <LoginForm />
+        </div>
       )}
     </div>
   );

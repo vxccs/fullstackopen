@@ -1,50 +1,36 @@
-import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { removeBlog, updateBlog } from '../reducers/blogsReducer';
+import { useParams } from 'react-router-dom';
 
-const Blog = ({ blog, user }) => {
+const Blog = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.loggedUser);
 
-  const [visible, setVisible] = useState(false);
+  const { id } = useParams();
 
-  const showWhenVisible = { display: visible ? '' : 'none' };
+  const blogs = useSelector((state) => state.blogs);
+  const blog = blogs.find((b) => b.id === id);
 
-  const blogStyle = {
-    backgroundColor: '#f3f3f3',
-    padding: '3px 10px',
-    borderRadius: '20px',
-    marginBottom: '1rem',
-  };
+  if (!blog) return null;
 
   return (
-    <div className="blog" style={blogStyle}>
-      <p>
-        {blog.title} by {blog.author}
-        <button onClick={() => setVisible(!visible)}>
-          {visible ? 'hide' : 'view'}
-        </button>
-      </p>
-      {visible && (
-        <div style={showWhenVisible} className="blogContent">
-          <p>{blog.url}</p>
-          <p>
-            likes: {blog.likes}{' '}
-            <button onClick={() => dispatch(updateBlog(blog.id))}>like</button>
-          </p>
-          <p>{blog.user.name}</p>
-          {blog.user.username === user.username && (
-            <button onClick={() => dispatch(removeBlog(blog))}>delete</button>
-          )}
-        </div>
-      )}
+    <div className="blog">
+      <h2>
+        "{blog.title}" by {blog.author}
+      </h2>
+      <div className="blogContent">
+        <p>{blog.url}</p>
+        <p>
+          {blog.likes} likes{' '}
+          <button onClick={() => dispatch(updateBlog(blog.id))}>like</button>
+        </p>
+        <p>added by {blog.user.name}</p>
+        {blog.user.username === user.username && (
+          <button onClick={() => dispatch(removeBlog(blog))}>delete</button>
+        )}
+      </div>
     </div>
   );
-};
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
 };
 
 export default Blog;
