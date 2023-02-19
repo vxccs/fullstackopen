@@ -3,12 +3,12 @@ import BlogList from './BlogList';
 
 const Home = () => {
   return (
-    <>
+    <div>
       <BlogForm />
-
-      <h2>blogs</h2>
+      <hr className="my-5" />
+      <h2 className="mb-3 text-xl font-medium">Blogs</h2>
       <BlogList />
-    </>
+    </div>
   );
 };
 

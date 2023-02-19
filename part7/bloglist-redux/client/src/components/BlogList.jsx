@@ -6,22 +6,14 @@ const BlogList = () => {
   const blogs = useSelector((state) => state.blogs);
   const sortedBlogs = [...blogs].sort((a, z) => z.likes - a.likes);
 
-  const listStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-  };
-
-  const itemStyle = {
-    backgroundColor: '#f3f3f3',
-    padding: '10px',
-    borderRadius: '5px',
-  };
-
   return (
-    <div style={listStyle}>
+    <div className="flex flex-col gap-2">
       {sortedBlogs.map((blog) => (
-        <Link key={blog.id} to={`/blogs/${blog.id}`} style={itemStyle}>
+        <Link
+          key={blog.id}
+          className="rounded-lg p-2 transition-all hover:bg-indigo-100 hover:pl-3 hover:text-indigo-600"
+          to={`/blogs/${blog.id}`}
+        >
           {blog.title}
         </Link>
       ))}

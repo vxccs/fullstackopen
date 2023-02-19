@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import blogsService from '../services/blogs';
 import { timedNotification } from './notificationReducer';
+import { useNavigate } from 'react-router-dom';
 
 const blogsSlice = createSlice({
   name: 'blogs',
@@ -19,10 +20,14 @@ const blogsSlice = createSlice({
     setBlogs(state, action) {
       return action.payload;
     },
+    appendComment(state, action) {
+      const blog = state.find((b) => b.id === action.payload.id);
+      blog.comments.push(action.payload.comment);
+    },
   },
 });
 
-export const { voteBlog, appendBlog, deleteBlog, setBlogs } =
+export const { voteBlog, appendBlog, deleteBlog, setBlogs, appendComment } =
   blogsSlice.actions;
 
 export const initializeBlogs = () => {
@@ -86,6 +91,23 @@ export const removeBlog = ({ title, author, id }) => {
           })
         );
       }
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        timedNotification({
+          message: error.response.data.error,
+          success: false,
+        })
+      );
+    }
+  };
+};
+
+export const addComment = (message, blog) => {
+  return async (dispatch) => {
+    try {
+      const newComment = await blogsService.comment(message, blog.id);
+      dispatch(appendComment({ comment: newComment, id: blog.id }));
     } catch (error) {
       console.log(error);
       dispatch(

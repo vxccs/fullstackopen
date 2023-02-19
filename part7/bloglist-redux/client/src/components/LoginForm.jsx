@@ -1,6 +1,8 @@
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../reducers/loggedUserReducer';
 import { useField } from '../hooks';
+import FormInput from './Utilities/FormInput';
+import Button from './Utilities/Button';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -14,18 +16,18 @@ const LoginForm = () => {
 
   return (
     <div>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input id="username" name="Username" {...username} />
+      <form onSubmit={handleLogin} className="flex flex-col gap-2 text-center">
+        <div className="text-left">
+          Username
+          <FormInput name="Username" spread={username} />
         </div>
-        <div>
-          password
-          <input id="password" name="Password" {...password} />
+        <div className="text-left">
+          Password
+          <FormInput name="Password" spread={password} />
         </div>
-        <button id="login-btn" type="submit">
-          login
-        </button>
+        <div className="w-full">
+          <Button type="submit" label="Login" />
+        </div>
       </form>
     </div>
   );
