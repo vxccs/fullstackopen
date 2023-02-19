@@ -20,7 +20,7 @@ const Authors = () => {
         variables: { name: author, setBornTo: Number(birthyear) },
       });
 
-      setAuthor('');
+      setAuthor('default');
       setBirthyear('');
     } catch (error) {
       console.log(error);
@@ -67,6 +67,7 @@ const Authors = () => {
           <select
             onChange={({ target }) => setAuthor(target.value)}
             defaultValue="default"
+            value={author}
           >
             <option disabled value="default">
               select author
@@ -75,7 +76,7 @@ const Authors = () => {
           </select>
         </div>
         <div>
-          birthyear
+          born
           <input
             type="number"
             value={birthyear}
