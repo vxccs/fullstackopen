@@ -1,29 +1,38 @@
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useState, useEffect } from 'react';
 
-const Authors = () => {
+const Authors = ({ authors, token, setError }) => {
   const [author, setAuthor] = useState('default');
   const [birthyear, setBirthyear] = useState('');
   const [datalist, setDatalist] = useState(null);
 
-  const authors = useQuery(ALL_AUTHORS);
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
-    refetchQueries: [{ query: ALL_AUTHORS }],
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        return {
+          allAuthors: allAuthors.map((a) =>
+            a.name === response.data.editAuthor.name
+              ? { ...a, born: response.data.editAuthor.born }
+              : a
+          ),
+        };
+      });
+    },
   });
 
-  const setBorn = (e) => {
+  const setBorn = async (e) => {
     e.preventDefault();
 
     try {
-      updateAuthor({
+      await updateAuthor({
         variables: { name: author, setBornTo: Number(birthyear) },
       });
 
       setAuthor('default');
       setBirthyear('');
     } catch (error) {
-      console.log(error);
+      setError(error.graphQLErrors[0].message);
     }
   };
 
@@ -60,32 +69,36 @@ const Authors = () => {
         </tbody>
       </table>
 
-      <h2>set birthyear</h2>
-      <form onSubmit={setBorn}>
-        <div>
-          name
-          <select
-            onChange={({ target }) => setAuthor(target.value)}
-            value={author}
-          >
-            <option disabled value="default">
-              select author
-            </option>
-            {datalist}
-          </select>
-        </div>
-        <div>
-          born
-          <input
-            type="number"
-            value={birthyear}
-            onChange={({ target }) => setBirthyear(target.value)}
-          />
-        </div>
-        <div>
-          <button type="submit">update author</button>
-        </div>
-      </form>
+      {token && (
+        <>
+          <h2>set birthyear</h2>
+          <form onSubmit={setBorn}>
+            <div>
+              name
+              <select
+                onChange={({ target }) => setAuthor(target.value)}
+                value={author}
+              >
+                <option disabled value="default">
+                  select author
+                </option>
+                {datalist}
+              </select>
+            </div>
+            <div>
+              born
+              <input
+                type="number"
+                value={birthyear}
+                onChange={({ target }) => setBirthyear(target.value)}
+              />
+            </div>
+            <div>
+              <button type="submit">update author</button>
+            </div>
+          </form>
+        </>
+      )}
     </div>
   );
 };
