@@ -10,9 +10,8 @@ const pubsub = new PubSub();
 
 const resolvers = {
   Author: {
-    bookCount: async (root) => {
-      return (await Author.findOne({ name: root.name })).books.length;
-    },
+    bookCount: async (root) =>
+      (await Author.findOne({ name: root.name })).books.length,
   },
 
   Query: {
