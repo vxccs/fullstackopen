@@ -12,11 +12,6 @@ const NewBook = ({ setError }) => {
 
   const [createBook] = useMutation(CREATE_BOOK, {
     update: (cache, response) => {
-      cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-        return {
-          allBooks: [...allBooks, response.data.addBook],
-        };
-      });
       cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
         return {
           allAuthors: allAuthors

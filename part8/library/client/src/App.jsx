@@ -1,4 +1,4 @@
-import { useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client';
 import { useState } from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import Authors from './components/Authors';
@@ -6,7 +6,7 @@ import Books from './components/Books';
 import LoginForm from './components/LoginForm';
 import NewBook from './components/NewBook';
 import Recommendations from './components/Recommendations';
-import { ALL_AUTHORS, ALL_BOOKS } from './queries';
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from './queries';
 
 const Notify = ({ errorMessage }) => {
   if (!errorMessage) {
@@ -21,7 +21,24 @@ const App = () => {
   const client = useApolloClient();
 
   const authors = useQuery(ALL_AUTHORS);
-  const books = useQuery(ALL_BOOKS);
+  const books = useQuery(ALL_BOOKS, { variables: { genre: '' } });
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const bookAdded = data.data.bookAdded;
+
+      notify(`${bookAdded.title} added`);
+
+      client.cache.updateQuery(
+        { query: ALL_BOOKS, variables: { genre: '' } },
+        ({ allBooks }) => {
+          return {
+            allBooks: [...allBooks, bookAdded],
+          };
+        }
+      );
+    },
+  });
 
   const notify = (message) => {
     setErrorMessage(message);

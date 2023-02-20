@@ -1,23 +1,28 @@
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { BOOKS_GENRE } from '../queries';
+import { ALL_BOOKS } from '../queries';
 import BookList from './BookList';
 
 const Books = ({ books }) => {
   const [genres, setGenres] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState('all genres');
+  const [selectedGenre, setSelectedGenre] = useState('');
 
   useEffect(() => {
     setGenres([
       ...new Set(books.data?.allBooks.map((b) => b.genres).flat()),
-      'all genres',
+      '',
     ]);
     filteredBooks.refetch({ genre: '' });
   }, [books]);
 
-  const filteredBooks = useQuery(BOOKS_GENRE, {
-    variables: { genre: selectedGenre === 'all genres' ? '' : selectedGenre },
+  const filteredBooks = useQuery(ALL_BOOKS, {
+    variables: { genre: selectedGenre },
   });
+
+  const filterBooks = (genre) => {
+    setSelectedGenre(genre);
+    filteredBooks.refetch({ genre });
+  };
 
   if (books.loading) return <div>loading...</div>;
 
@@ -26,20 +31,12 @@ const Books = ({ books }) => {
       <h2>books</h2>
 
       {genres.map((genre) => (
-        <button
-          key={genre}
-          onClick={() => {
-            setSelectedGenre(genre);
-            filteredBooks.refetch({
-              genre: genre === 'all genres' ? '' : genre,
-            });
-          }}
-        >
-          {genre}
+        <button key={genre} onClick={() => filterBooks(genre)}>
+          {genre || 'all genres'}
         </button>
       ))}
 
-      <h3>books filtered by genre: {selectedGenre}</h3>
+      <h3>books filtered by genre: {selectedGenre || 'all genres'}</h3>
 
       {filteredBooks.loading ? (
         <div>loading...</div>

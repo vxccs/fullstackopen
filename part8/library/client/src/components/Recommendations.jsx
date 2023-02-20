@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
-import { BOOKS_GENRE, CURRENT_USER } from '../queries';
+import { useEffect } from 'react';
+import { ALL_BOOKS, CURRENT_USER } from '../queries';
 import BookList from './BookList';
 
 const Recommendations = () => {
@@ -10,7 +10,7 @@ const Recommendations = () => {
     filteredBooks.refetch({ genre: currentUser.data?.me.favouriteGenre });
   }, [currentUser]);
 
-  const filteredBooks = useQuery(BOOKS_GENRE, {
+  const filteredBooks = useQuery(ALL_BOOKS, {
     variables: { genre: currentUser.data?.me.favouriteGenre },
   });
 

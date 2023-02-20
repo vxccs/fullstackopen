@@ -45,6 +45,7 @@ const Authors = ({ authors, token, setError }) => {
         </option>
       ));
     setDatalist(data);
+    authors.refetch();
   }, [authors]);
 
   if (authors.loading) return <div>loading...</div>;
