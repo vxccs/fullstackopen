@@ -5,6 +5,7 @@ import Authors from './components/Authors';
 import Books from './components/Books';
 import LoginForm from './components/LoginForm';
 import NewBook from './components/NewBook';
+import Recommendations from './components/Recommendations';
 import { ALL_AUTHORS, ALL_BOOKS } from './queries';
 
 const Notify = ({ errorMessage }) => {
@@ -53,6 +54,9 @@ const App = () => {
             <Link to="/newbook">
               <button type="button">new book</button>
             </Link>
+            <Link to="/recs">
+              <button type="button">recommendations</button>
+            </Link>
             <button type="button" onClick={logoutUser}>
               logout
             </button>
@@ -70,6 +74,7 @@ const App = () => {
         />
         <Route path="/books" element={<Books books={books} />} />
         <Route path="/newbook" element={<NewBook setError={notify} />} />
+        <Route path="/recs" element={<Recommendations />} />
         <Route
           path="/login"
           element={<LoginForm setToken={setToken} setError={notify} />}
