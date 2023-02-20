@@ -119,7 +119,6 @@ const resolvers = {
         throw new GraphQLError('book already exists', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.title,
           },
         });
       }
@@ -128,6 +127,14 @@ const resolvers = {
       if (!author) {
         author = new Author({ name: args.author, born: null });
         await author.save();
+      }
+
+      if (args.published === 0) {
+        throw new GraphQLError('invalid publish date', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        });
       }
 
       const newBook = new Book({ ...args, author });
@@ -149,7 +156,14 @@ const resolvers = {
         throw new GraphQLError('author does not exist', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.name,
+          },
+        });
+      }
+
+      if (args.setBornTo === 0) {
+        throw new GraphQLError('invalid birth date', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
           },
         });
       }
@@ -164,7 +178,6 @@ const resolvers = {
         throw new GraphQLError('user already exists', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.username,
           },
         });
       }
