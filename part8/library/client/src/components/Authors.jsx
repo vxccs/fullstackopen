@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useState, useEffect } from 'react';
 
 const Authors = () => {
-  const [author, setAuthor] = useState('');
+  const [author, setAuthor] = useState('default');
   const [birthyear, setBirthyear] = useState('');
   const [datalist, setDatalist] = useState(null);
 
@@ -66,7 +66,6 @@ const Authors = () => {
           name
           <select
             onChange={({ target }) => setAuthor(target.value)}
-            defaultValue="default"
             value={author}
           >
             <option disabled value="default">
