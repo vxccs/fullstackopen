@@ -29,7 +29,7 @@ const parseExerciseArguments = (args: string[]): exerciseArgs => {
   };
 };
 
-const calculateExercises = (week: number[], goal: number): result => {
+export const calculateExercises = (week: number[], goal: number): result => {
   const periodLength = week.length;
   const trainingDays = week.filter((d) => d > 0).length;
 
