@@ -8,6 +8,7 @@ import {
   Grid,
   Button,
   SelectChangeEvent,
+  Box,
 } from '@mui/material';
 
 import { PatientFormValues, Gender } from '../../types';
@@ -58,16 +59,24 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
 
   return (
     <div>
-      <form onSubmit={addPatient}>
+      <Box
+        component="form"
+        sx={{
+          '& .MuiTextField-root': { marginBlock: 1 },
+        }}
+        onSubmit={addPatient}
+      >
         <TextField
           label="Name"
           fullWidth
+          variant="outlined"
           value={name}
           onChange={({ target }) => setName(target.value)}
         />
         <TextField
           label="Social security number"
           fullWidth
+          variant="outlined"
           value={ssn}
           onChange={({ target }) => setSsn(target.value)}
         />
@@ -75,19 +84,21 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           label="Date of birth"
           placeholder="YYYY-MM-DD"
           fullWidth
+          variant="outlined"
           value={dateOfBirth}
           onChange={({ target }) => setDateOfBirth(target.value)}
         />
         <TextField
           label="Occupation"
           fullWidth
+          variant="outlined"
           value={occupation}
           onChange={({ target }) => setOccupation(target.value)}
         />
 
-        <InputLabel style={{ marginTop: 20 }}>Gender</InputLabel>
+        <InputLabel style={{ marginTop: 8 }}>Gender</InputLabel>
         <Select
-          label="Gender"
+          style={{ marginTop: 8, marginBottom: 24 }}
           fullWidth
           value={gender}
           onChange={onGenderChange}
@@ -123,7 +134,7 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
             </Button>
           </Grid>
         </Grid>
-      </form>
+      </Box>
     </div>
   );
 };
