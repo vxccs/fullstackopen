@@ -43,7 +43,7 @@ const App = () => {
       exerciseCount: 21,
       description: 'Typing the backend',
       requirements: ['nodejs', 'jest'],
-      kind: 'special',
+      kind: 'skills',
     },
   ];
 

@@ -1,12 +1,7 @@
 import { CoursePart } from '../types';
+import { assertError } from '../utils';
 
 const Part = ({ part }: { part: CoursePart }) => {
-  const assertError = (value: never): never => {
-    throw new Error(
-      `unhandled discriminated union member: ${JSON.stringify(value)}`
-    );
-  };
-
   switch (part.kind) {
     case 'basic':
       return (
@@ -46,7 +41,7 @@ const Part = ({ part }: { part: CoursePart }) => {
           <p>{part.backgroundMaterial}</p>
         </div>
       );
-    case 'special':
+    case 'skills':
       return (
         <div>
           <p>
