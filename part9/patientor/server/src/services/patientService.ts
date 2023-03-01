@@ -20,7 +20,7 @@ const getSensitiveEntries = (): Patient[] => {
       dateOfBirth,
       gender,
       occupation,
-      entries: entries || [],
+      entries,
       ssn,
     })
   );

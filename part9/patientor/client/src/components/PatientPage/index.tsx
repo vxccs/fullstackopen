@@ -1,11 +1,17 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Patient } from '../../types';
+import { Diagnosis, Patient } from '../../types';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import { Box, List, ListItem, ListItemText, Typography } from '@mui/material';
 
-const PatientPage = ({ patients }: { patients: Patient[] }) => {
+const PatientPage = ({
+  patients,
+  diagnoses,
+}: {
+  patients: Patient[];
+  diagnoses: Diagnosis[];
+}) => {
   const { id } = useParams();
   const patient = patients.find((p) => p.id === id);
 
@@ -31,6 +37,32 @@ const PatientPage = ({ patients }: { patients: Patient[] }) => {
           <ListItemText primary={`occupation: ${patient.occupation}`} />
         </ListItem>
       </List>
+      {patient.entries.length > 0 && (
+        <>
+          <Typography variant="h5" gutterBottom>
+            entries
+          </Typography>
+          {patient.entries.map((entry) => (
+            <div key={entry.id}>
+              <Typography variant="body1">
+                {entry.date} <em>{entry.description}</em>
+              </Typography>
+              <List>
+                {entry.diagnosisCodes &&
+                  entry.diagnosisCodes.map((code) => (
+                    <ListItem key={code} sx={{ py: 0 }}>
+                      <ListItemText>
+                        {`${code} ${
+                          diagnoses.find((d) => d.code === code)?.name
+                        }`}
+                      </ListItemText>
+                    </ListItem>
+                  ))}
+              </List>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 };
