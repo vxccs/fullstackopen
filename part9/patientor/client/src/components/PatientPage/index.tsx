@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Diagnosis, Patient } from '../../types';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import { Box, List, ListItem, ListItemText, Typography } from '@mui/material';
+import EntryDetails from './EntryDetails';
 
 const PatientPage = ({
   patients,
@@ -38,30 +38,14 @@ const PatientPage = ({
         </ListItem>
       </List>
       {patient.entries.length > 0 && (
-        <>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <Typography variant="h5" gutterBottom>
             entries
           </Typography>
           {patient.entries.map((entry) => (
-            <div key={entry.id}>
-              <Typography variant="body1">
-                {entry.date} <em>{entry.description}</em>
-              </Typography>
-              <List>
-                {entry.diagnosisCodes &&
-                  entry.diagnosisCodes.map((code) => (
-                    <ListItem key={code} sx={{ py: 0 }}>
-                      <ListItemText>
-                        {`${code} ${
-                          diagnoses.find((d) => d.code === code)?.name
-                        }`}
-                      </ListItemText>
-                    </ListItem>
-                  ))}
-              </List>
-            </div>
+            <EntryDetails entry={entry} diagnoses={diagnoses} key={entry.id} />
           ))}
-        </>
+        </Box>
       )}
     </div>
   );
