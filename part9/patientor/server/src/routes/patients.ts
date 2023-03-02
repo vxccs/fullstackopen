@@ -43,11 +43,11 @@ patientsRouter.get('/:id', (req, res) => {
 patientsRouter.post('/:id/entries/', (req, res) => {
   try {
     const newEntry = utils.toNewEntry(req.body);
-    const addedPatient = patientService.addNewPatientEntry(
+    const addedEntry = patientService.addNewPatientEntry(
       req.params.id,
       newEntry as EntryWithoutId
     );
-    res.json(addedPatient);
+    res.json(addedEntry);
   } catch (error) {
     let errorMessage = 'Something went wrong.';
     if (error instanceof Error) {

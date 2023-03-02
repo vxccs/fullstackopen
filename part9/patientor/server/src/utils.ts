@@ -140,7 +140,7 @@ const parseLeave = (leave: unknown): { startDate: string; endDate: string } => {
 const parseRating = (rating: unknown): HealthCheckRating => {
   if (!isString(rating) || !isRating(rating))
     throw new Error('incorrect rating');
-  return rating as HealthCheckRating;
+  return Number(rating) as HealthCheckRating;
 };
 
 const toNewEntry = (object: unknown): EntryWithoutId | undefined => {
@@ -194,7 +194,7 @@ const toNewEntry = (object: unknown): EntryWithoutId | undefined => {
           if ('healthCheckRating' in object) {
             return {
               ...newEntry,
-              healthCheckRating: parseRating(object.healthCheckRating),
+              healthCheckRating: parseRating(String(object.healthCheckRating)),
               type: 'HealthCheck',
             };
           } else {
