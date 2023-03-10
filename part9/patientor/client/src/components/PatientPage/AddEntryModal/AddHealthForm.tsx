@@ -32,7 +32,7 @@ const healthCheckRatingOptions: HealthCheckRatingOption[] = Object.values(
   }))
   .filter((v) => typeof v.value === 'number');
 
-const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
+const AddHealthForm = ({ onCancel, onSubmit }: Props) => {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [specialist, setSpecialist] = useState('');
@@ -116,7 +116,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
         <Select
           style={{ marginTop: 8, marginBottom: 24 }}
           fullWidth
-          value={healthCheckRating}
+          value={healthCheckRating as unknown as string}
           onChange={onHealthRatingChange}
         >
           {healthCheckRatingOptions.map((option) => (
@@ -155,4 +155,4 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   );
 };
 
-export default AddEntryForm;
+export default AddHealthForm;

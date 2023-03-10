@@ -143,73 +143,68 @@ const parseRating = (rating: unknown): HealthCheckRating => {
   return Number(rating) as HealthCheckRating;
 };
 
-const toNewEntry = (object: unknown): EntryWithoutId | undefined => {
-  try {
-    if (!object || typeof object !== 'object')
+const toNewEntry = (object: unknown): EntryWithoutId => {
+  if (!object || typeof object !== 'object')
+    throw new Error('incorrect or missing data');
+
+  if (
+    'type' in object &&
+    'description' in object &&
+    'date' in object &&
+    'specialist' in object
+  ) {
+    if (!object.description || !object.specialist || !object.date)
       throw new Error('incorrect or missing data');
 
-    if (
-      'type' in object &&
-      'description' in object &&
-      'date' in object &&
-      'specialist' in object
-    ) {
-      const newEntry = {
-        description: parseName(object.description),
-        specialist: parseName(object.specialist),
-        date: parseDate(object.date),
-        diagnosisCodes:
-          'diagnosisCodes' in object
-            ? parseDiagnosisCodes(object.diagnosisCodes)
-            : [],
-      };
+    const newEntry = {
+      description: parseName(object.description),
+      specialist: parseName(object.specialist),
+      date: parseDate(object.date),
+      diagnosisCodes:
+        'diagnosisCodes' in object
+          ? parseDiagnosisCodes(object.diagnosisCodes)
+          : [],
+    };
 
-      switch (object.type) {
-        case 'Hospital':
-          if ('discharge' in object) {
-            return {
-              ...newEntry,
-              discharge: parseDischarge(object.discharge),
-              type: 'Hospital',
-            };
+    switch (object.type) {
+      case 'Hospital':
+        if ('discharge' in object) {
+          return {
+            ...newEntry,
+            discharge: parseDischarge(object.discharge),
+            type: 'Hospital',
+          };
+        }
+        throw new Error('some fields are missing');
+      case 'OccupationalHealthcare':
+        if ('employerName' in object) {
+          const entry: EntryWithoutId = {
+            ...newEntry,
+            employerName: parseName(object.employerName),
+            type: 'OccupationalHealthcare',
+          };
+          if ('sickLeave' in object) {
+            return { ...entry, sickLeave: parseLeave(object.sickLeave) };
           } else {
-            throw new Error('some fields are missing');
+            return entry;
           }
-        case 'OccupationalHealthcare':
-          if ('employerName' in object) {
-            const entry: EntryWithoutId = {
-              ...newEntry,
-              employerName: parseName(object.employerName),
-              type: 'OccupationalHealthcare',
-            };
-            if ('sickLeave' in object) {
-              return { ...entry, sickLeave: parseLeave(object.sickLeave) };
-            } else {
-              return entry;
-            }
-          } else {
-            throw new Error('some fields are missing');
-          }
-        case 'HealthCheck':
-          if ('healthCheckRating' in object) {
-            return {
-              ...newEntry,
-              healthCheckRating: parseRating(String(object.healthCheckRating)),
-              type: 'HealthCheck',
-            };
-          } else {
-            throw new Error('some fields are missing');
-          }
-        default:
-          throw new Error('incorrect entry type');
-      }
+        }
+        throw new Error('some fields are missing');
+      case 'HealthCheck':
+        if ('healthCheckRating' in object) {
+          return {
+            ...newEntry,
+            healthCheckRating: parseRating(String(object.healthCheckRating)),
+            type: 'HealthCheck',
+          };
+        }
+        throw new Error('some fields are missing');
+      default:
+        throw new Error('incorrect entry type');
     }
-
-    return undefined;
-  } catch (error) {
-    console.log(error);
-    return undefined;
   }
+
+  throw new Error('incorrect input');
 };
 
 export default { toNewPatientEntry, parseDiagnosisCodes, toNewEntry };

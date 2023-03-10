@@ -1,6 +1,5 @@
 import express from 'express';
 import patientService from '../services/patientService';
-import { EntryWithoutId } from '../types';
 import utils from '../utils';
 
 const patientsRouter = express.Router();
@@ -12,8 +11,10 @@ patientsRouter.get('/', (_req, res) => {
 patientsRouter.post('/', (req, res) => {
   try {
     const newPatientEntry = utils.toNewPatientEntry(req.body);
-    const addedPatient = patientService.addEntry(newPatientEntry);
-    res.json(addedPatient);
+    if (newPatientEntry) {
+      const addedPatient = patientService.addEntry(newPatientEntry);
+      res.json(addedPatient);
+    }
   } catch (error) {
     let errorMessage = 'Something went wrong.';
     if (error instanceof Error) {
@@ -45,7 +46,7 @@ patientsRouter.post('/:id/entries/', (req, res) => {
     const newEntry = utils.toNewEntry(req.body);
     const addedEntry = patientService.addNewPatientEntry(
       req.params.id,
-      newEntry as EntryWithoutId
+      newEntry
     );
     res.json(addedEntry);
   } catch (error) {

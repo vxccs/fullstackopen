@@ -25,10 +25,14 @@ const PatientPage = ({
 }) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [type, setType] = useState<string>('');
   const { id } = useParams();
   const patient = patients.find((p) => p.id === id);
 
-  const openModal = () => setModalOpen(true);
+  const openModal = (type: string) => {
+    setType(type);
+    setModalOpen(true);
+  };
 
   const closeModal = () => {
     setModalOpen(false);
@@ -84,9 +88,17 @@ const PatientPage = ({
       <Typography variant="h5" gutterBottom>
         entries
       </Typography>
-      <Button variant="contained" onClick={() => openModal()}>
-        HealthCheck
-      </Button>
+      <Box sx={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+        <Button variant="contained" onClick={() => openModal('occupational')}>
+          Occupational Healthcare
+        </Button>
+        <Button variant="contained" onClick={() => openModal('health')}>
+          Health Check
+        </Button>
+        <Button variant="contained" onClick={() => openModal('hospital')}>
+          Hospital
+        </Button>
+      </Box>
       {patient.entries.length > 0 && (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {patient.entries.map((entry) => (
@@ -99,6 +111,7 @@ const PatientPage = ({
         onSubmit={submitNewEntry}
         error={error}
         onClose={closeModal}
+        type={type}
       />
     </div>
   );

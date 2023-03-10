@@ -8,22 +8,39 @@ import {
 
 // import AddPatientForm from './AddPatientForm';
 import { EntryWithoutId } from '../../../types';
-import AddEntryForm from './AddEntryForm';
+import AddHealthForm from './AddHealthForm';
+import AddHospitalForm from './AddHospitalForm';
+import AddOccupationalForm from './AddOccupationalForm';
 
 interface Props {
   modalOpen: boolean;
   onClose: () => void;
   onSubmit: (values: EntryWithoutId) => void;
   error?: string;
+  type: string;
 }
 
-const AddEntryModal = ({ modalOpen, onClose, onSubmit, error }: Props) => (
+const AddEntryModal = ({
+  modalOpen,
+  onClose,
+  onSubmit,
+  error,
+  type,
+}: Props) => (
   <Dialog fullWidth={true} open={modalOpen} onClose={() => onClose()}>
     <DialogTitle>Add a new entry</DialogTitle>
     <Divider />
     <DialogContent>
       {error && <Alert severity="error">{error}</Alert>}
-      <AddEntryForm onSubmit={onSubmit} onCancel={onClose} />
+      {type === 'health' && (
+        <AddHealthForm onSubmit={onSubmit} onCancel={onClose} />
+      )}
+      {type === 'hospital' && (
+        <AddHospitalForm onSubmit={onSubmit} onCancel={onClose} />
+      )}
+      {type === 'occupational' && (
+        <AddOccupationalForm onSubmit={onSubmit} onCancel={onClose} />
+      )}
     </DialogContent>
   </Dialog>
 );
